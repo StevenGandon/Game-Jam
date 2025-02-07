@@ -1,5 +1,7 @@
 from CNEngine import *
 from hashlib import sha1
+from subprocess import Popen, PIPE
+from platform import system
 
 class Level0Interface(MainInterface):
     def __init__(self, name, rpc_id = None, icon = None):
@@ -15,6 +17,9 @@ class Level0Interface(MainInterface):
         self.ctrl = False
 
         self.texts = []
+        self.animation_frame = 0
+        self.line_end = True
+        self.inputed = ""
 
     def events(self) -> None:
         super().events()
@@ -30,6 +35,20 @@ class Level0Interface(MainInterface):
             self.ctrl = False
 
         scroll = self.window.get_event(EVENT_MOUSE_SCROLL)
+
+        if (key_press):
+            if (key_press.key > 31 and key_press.key < 127):
+                self.inputed += chr(key_press.key)
+            if (key_press.key == 127 or key_press.key == 8):
+                self.inputed = self.inputed[:-1]
+            if (key_press.key == 13):
+                process = Popen(f"{self.inputed}", executable="C:\\Windows\\System32\\cmd.exe" if system() == "Windows" else "/bin/sh", stderr=PIPE, stdout=PIPE, shell=True)
+                stdout, stderr = process.communicate()
+
+                self.console_out.file = bytearray(self.console_out.file[:-1] + self.inputed.encode() + b'\n')
+                self.console_out.write(f"{stdout.decode()}{stderr.decode()}\n".replace('\r', ''))
+                self.console_out.write(f"(~/.repos/Game-Jam)-$ \n")
+                self.inputed = ""
 
         if (not scroll):
             return
@@ -60,8 +79,14 @@ class Level0Interface(MainInterface):
     def update(self) -> None:
         super().update()
 
+        self.animation_frame += self.delta_time
+
+        if (self.animation_frame > 137):
+            self.animation_frame = 0
+            self.line_end = not self.line_end
+
         lines = self.console_out.read()
-        computed = sha1(lines.encode(), usedforsecurity=False).hexdigest()
+        computed = sha1((lines + f"{self.line_end}{self.inputed}").encode(), usedforsecurity=False).hexdigest()
 
         if (computed != self.hash):
             for item in self.texts:
@@ -77,6 +102,13 @@ class Level0Interface(MainInterface):
                     self.texts.append(Text(5, self.rel_y + i * self.size, item, self.size, font=f"{RESSOURCES}/font/ConsolaMono-Book.ttf"))
                 else:
                     self.texts.append(None)
+
+            i = 1
+            while i <= len(self.texts) and not self.texts[-i]:
+                i += 1
+            if (i <= len(self.texts) and self.texts[-i]):
+                self.texts[-i].set_text(self.texts[-i].text + self.inputed + ("_" if self.line_end else ""))
+
 
     def draw(self):
         self.window.clear((0, 0, 0))
@@ -107,8 +139,9 @@ class Level0Interface(MainInterface):
 def build_level0():
     interface: MainInterface = Level0Interface("Terminal emulator", icon=f"{RESSOURCES}/icons/terminal.png")
 
-    interface.console_out.write("~(/.repos/Game-Jam)-$ ./game.out\n")
+    interface.console_out.write(f"(~/.repos/Game-Jam)-$ {'./game.exe' if system() == "Windows" else './game.out'}\n")
     interface.console_out.write("Segmentation fault (core dump)\n")
+    interface.console_out.write("(~/.repos/Game-Jam)-$ \n")
     interface.console_out.flush()
 
     return (interface)

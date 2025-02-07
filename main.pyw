@@ -43,7 +43,8 @@ def load_level(level_builder):
 
 def levels_following():
     load_level(build_level0)
-    load_level(build_level1)
+    if (not load_level(build_level1)):
+        return
 
 def main() -> int:
     levels_following()

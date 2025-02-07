@@ -29,16 +29,16 @@ def _get_event(event_type):
 
 def _get_event_arguments(event) -> tuple:
     if (event.type == SDL_MOUSEBUTTONDOWN or event.type == SDL_MOUSEBUTTONUP):
-        return (event.button.x, event.button.y, event.button.button)
+        return (event.button.x, event.button.y, (event.button.button,))
     if (event.type == SDL_MOUSEMOTION):
-        return (event.motion.x, event.motion.y, 0)
+        return (event.motion.x, event.motion.y, (0,))
     if (event.type == SDL_MOUSEWHEEL):
-        return (event.wheel.x, event.wheel.y, 0)
+        return (event.wheel.x, event.wheel.y, (0,))
     if (event.type == SDL_KEYUP):
-        return (0, 0, event.key.keysym.sym)
+        return (0, 0, (event.key.keysym.sym,))
     if (event.type == SDL_KEYDOWN):
-        return (0, 0, event.key.keysym.sym)
-    return (0, 0, 0)
+        return (0, 0, (event.key.keysym.sym,))
+    return (0, 0, (0,))
 
 def fetch_events():
     event = SDL_Event()
@@ -51,8 +51,19 @@ def fetch_events():
         window_id = event.window.windowID
 
         if (window_id in EXISTING_WINDOWS):
-            EXISTING_WINDOWS[window_id].events[_get_event(event.type if event.type != SDL_WINDOWEVENT else event.window.event)] = Event(event.type, *_get_event_arguments(event))
+            ev = Event(event.type, *_get_event_arguments(event))
+            ev_type = _get_event(event.type if event.type != SDL_WINDOWEVENT else event.window.event)
+
+            if (ev_type not in EXISTING_WINDOWS[window_id].events or not EXISTING_WINDOWS[window_id].events[ev_type]):
+                EXISTING_WINDOWS[window_id].events[ev_type] = ev
+            else:
+                EXISTING_WINDOWS[window_id].events[ev_type].key = (*ev.key, *EXISTING_WINDOWS[window_id].events[ev_type].key)
 
         else:
             for win in EXISTING_WINDOWS.values():
-                win.events[event.type] = Event(event.type, *_get_event_arguments(event))
+                ev = Event(event.type, *_get_event_arguments(event))
+
+                if (event.type not in win.events or not win.events[event.type]):
+                    win.events[event.type] = ev
+                else:
+                    win.events[event.type].key = (*ev.key, *win.events[event.type].key)

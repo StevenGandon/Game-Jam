@@ -86,12 +86,12 @@ class ConsoleInterface(Interface):
     def events(self) -> None:
         key_press = self.window.get_event(EVENT_KEY_DOWN)
 
-        if (key_press and key_press.key == 1073742048):
+        if (key_press and 1073742048 in key_press.key):
             self.ctrl = True
 
         key_release = self.window.get_event(EVENT_KEY_UP)
 
-        if (key_release and key_release.key == 1073742048):
+        if (key_release and 1073742048 in key_release.key):
             self.ctrl = False
 
         scroll = self.window.get_event(EVENT_MOUSE_SCROLL)

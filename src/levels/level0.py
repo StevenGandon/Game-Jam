@@ -26,29 +26,30 @@ class Level0Interface(MainInterface):
 
         key_press = self.window.get_event(EVENT_KEY_DOWN)
 
-        if (key_press and key_press.key == 1073742048):
+        if (key_press and 1073742048 in key_press.key):
             self.ctrl = True
 
         key_release = self.window.get_event(EVENT_KEY_UP)
 
-        if (key_release and key_release.key == 1073742048):
+        if (key_release and 1073742048 in key_release.key):
             self.ctrl = False
 
         scroll = self.window.get_event(EVENT_MOUSE_SCROLL)
 
         if (key_press):
-            if (key_press.key > 31 and key_press.key < 127):
-                self.inputed += chr(key_press.key)
-            if (key_press.key == 127 or key_press.key == 8):
-                self.inputed = self.inputed[:-1]
-            if (key_press.key == 13):
-                process = Popen(f"{self.inputed}", executable="C:\\Windows\\System32\\cmd.exe" if system() == "Windows" else "/bin/sh", stderr=PIPE, stdout=PIPE, shell=True)
-                stdout, stderr = process.communicate()
+            for key in key_press.key:
+                if (key > 31 and key < 127):
+                    self.inputed += chr(key)
+                if (key == 127 or key == 8):
+                    self.inputed = self.inputed[:-1]
+                if (key == 13):
+                    process = Popen(f"{self.inputed}", executable="C:\\Windows\\System32\\cmd.exe" if system() == "Windows" else "/bin/sh", stderr=PIPE, stdout=PIPE, shell=True)
+                    stdout, stderr = process.communicate()
 
-                self.console_out.file = bytearray(self.console_out.file[:-1] + self.inputed.encode() + b'\n')
-                self.console_out.write(f"{stdout.decode()}{stderr.decode()}\n".replace('\r', ''))
-                self.console_out.write(f"(~/.repos/Game-Jam)-$ \n")
-                self.inputed = ""
+                    self.console_out.file = bytearray(self.console_out.file[:-1] + self.inputed.encode() + b'\n')
+                    self.console_out.write(f"{stdout.decode()}{stderr.decode()}\n".replace('\r', ''))
+                    self.console_out.write(f"(~/.repos/Game-Jam)-$ \n")
+                    self.inputed = ""
 
         if (not scroll):
             return

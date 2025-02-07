@@ -29,5 +29,7 @@ def build_level1():
     interface: MainInterface = MainInterface("Game")
     interface.add_element(MovingBackground(interface))
 
+    interface.window.set_closable(False)
+
     return (interface)
 

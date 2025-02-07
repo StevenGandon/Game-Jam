@@ -87,6 +87,7 @@ class Level0Interface(MainInterface):
         for item in self.texts:
             if (item):
                 item.draw(self.window)
+
         all_windows_draw()
 
     def destroy(self) -> None:
@@ -103,9 +104,8 @@ class Level0Interface(MainInterface):
 
         super().destroy()
 
-
 def build_level0():
-    interface: MainInterface = Level0Interface("Terminal emulator")
+    interface: MainInterface = Level0Interface("Terminal emulator", icon=f"{RESSOURCES}/icons/terminal.png")
 
     interface.console_out.write("~(/.repos/Game-Jam)-$ ./game.out\n")
     interface.console_out.write("Segmentation fault (core dump)\n")

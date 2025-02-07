@@ -52,6 +52,7 @@ class MainInterface(Interface):
         self.delta_time: float = 0
 
         self.recover = False
+        self.force_stopped = False
 
         self.interfaces: list = []
 
@@ -117,7 +118,7 @@ class MainInterface(Interface):
         draw = self.draw
         clock = self.clock
 
-        while (not all_windows_closes()):
+        while (not all_windows_closes() and not self.force_stopped):
             events()
             update()
             draw()
@@ -149,4 +150,3 @@ class MainInterface(Interface):
         self.rpc.stop()
 
         self.logger.write(f"Uniniting SDL2.", flush=True)
-        uninit()

@@ -1,0 +1,6 @@
+discord_rpc:int:0
+main_interface_width:int:925
+main_interface_height:int:600
+interface_fps:int:60
+logger_max_line:int:999
+main_interface_icon:str:./assets/ressources/icon.png

@@ -10,7 +10,8 @@ from sdl2 import (
     SDL_SWSURFACE,
     SDL_Surface,
     SDL_Rect,
-    SDL_BlitScaled
+    SDL_BlitScaled,
+    SDL_SetSurfaceAlphaMod
 )
 
 from sdl2.sdlimage import (
@@ -49,6 +50,12 @@ class Texture(object):
             return
 
         SDL_FillRect(self.surface, None, SDL_MapRGBA(self.surface.contents.format, *color) if len(color) == 4 else SDL_MapRGB(self.surface.contents.format, *color))
+
+    def set_alpha(self, alpha: int):
+        if (self.surface is None):
+            return
+
+        SDL_SetSurfaceAlphaMod(self.surface, alpha)
 
     def blit(self, other, position: Vector2 = None, size: Vector2 = None, from_pos: Vector2 = None, ratios: Vector2 = None) -> None:
         if (self.surface is None):

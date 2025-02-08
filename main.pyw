@@ -10,12 +10,14 @@ import sys
 BASE_PRINT = builtins.print
 LAST_WINDOW = None
 
-def load_level(level_builder, rebuild_window=True):
+def load_level(level_builder, rebuild_window=True, clear_datas=True):
     global LAST_WINDOW
 
     if (LAST_WINDOW):
-        LAST_WINDOW.gui.clear()
-        LAST_WINDOW.elements.clear()
+        if (clear_datas):
+            LAST_WINDOW.gui.clear()
+            LAST_WINDOW.elements.clear()
+            LAST_WINDOW.interfaces.clear()
         LAST_WINDOW.force_stopped = False
 
         if (rebuild_window):
@@ -57,6 +59,8 @@ def levels_following():
     if (not load_level(build_level1, rebuild_window=True)):
         return
     if (not load_level(build_level2, rebuild_window=False)):
+        return
+    if (not load_level(build_level3, rebuild_window=False, clear_datas=False)):
         return
 
 def main() -> int:

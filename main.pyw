@@ -60,6 +60,8 @@ def levels_following():
         return
     if (not load_level(build_level2, rebuild_window=False)):
         return
+    if (not load_level(build_levelX, rebuild_window=False)):
+        return
     if (not load_level(build_level3, rebuild_window=False, clear_datas=False)):
         return
 

@@ -140,7 +140,7 @@ class Level0Interface(MainInterface):
 def build_level0():
     interface: MainInterface = Level0Interface("Terminal emulator", icon=f"{RESSOURCES}/icons/terminal.png")
 
-    interface.console_out.write(f"(~/.repos/Game-Jam)-$ {'./game.exe' if system() == "Windows" else './game.out'}\n")
+    interface.console_out.write(f"(~/.repos/Game-Jam)-$ {'./game.exe' if system() == 'Windows' else './game.out'}\n")
     interface.console_out.write("Segmentation fault (core dump)\n")
     interface.console_out.write("(~/.repos/Game-Jam)-$ \n")
     interface.console_out.flush()

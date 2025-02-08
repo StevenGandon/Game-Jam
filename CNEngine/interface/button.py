@@ -18,6 +18,8 @@ class Button(Object):
         self.click = False
         self.release = False
 
+        self.click_pos = (0, 0)
+
     def event(self, window: Window):
         event = window.get_event(EVENT_MOUSE_MOVE)
         if (event and event.x >= self.x and event.x <= self.x + self.size_x and event.y >= self.y and event.y <= self.y + self.size_y):
@@ -31,6 +33,7 @@ class Button(Object):
             self.click = False
             if (self.hover):
                 self.release = True
+                self.click_pos = (window.get_event(EVENT_MOUSE_UP).x, window.get_event(EVENT_MOUSE_UP).y)
 
     def update(self, delta_time):
         if (self.hover and not self.cursor):
@@ -42,4 +45,4 @@ class Button(Object):
 
         if (self.release):
             self.release = False
-            self.callback()
+            self.callback(self.click_pos)

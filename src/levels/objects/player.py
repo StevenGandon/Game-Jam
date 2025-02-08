@@ -144,4 +144,4 @@ class Player(Object):
         super().update(delta_time)
 
     def draw(self, screen):
-        screen.blit_scaled(self.sprite, Vector2(self.x, self.y), ratios=Vector2(2, 2))
+        screen.blit_scaled(self.sprite, Vector2(self.x, self.y), ratios=Vector2(1.8, 1.8))

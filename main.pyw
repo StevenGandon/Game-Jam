@@ -1,11 +1,11 @@
+import builtins
+import sys
+
 from CNEngine import *
 from src import *
 
 from sys import exit
 from traceback import format_exc
-
-import builtins
-import sys
 
 BASE_PRINT = builtins.print
 LAST_WINDOW = None

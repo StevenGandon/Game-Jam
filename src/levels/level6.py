@@ -21,7 +21,7 @@ class MissingTexture(Object):
             self.button.update(delta_time)
         self.genericobject.update(delta_time)
 
-    def click_callback(self):
+    def click_callback(self, *args):
         self.booltexture1 = True
 
     def event(self, window) -> None:

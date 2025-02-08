@@ -35,7 +35,7 @@ class OlivierDeChezCarglass(Object):
         sdlmixer.Mix_PlayMusic(self.sound, 0)
         self.start_time = time.time()
 
-    def skip_ad(self):
+    def skip_ad(self, *args):
         self.start_time = time.time()
         sdlmixer.Mix_HaltMusic()
         self.start_sound()

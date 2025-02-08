@@ -1,44 +1,82 @@
+import math
+import colorsys
+
 from CNEngine import *
 from .objects.start_animation import StartAnimation
-from .objects.particle import ParticleSpawner, Particle
 
 class InfiniteLoadingScreen(Loader):
     def __init__(self, interface):
         super().__init__(0, 0)
-
         self.interface = interface
-        self.animation_frame = 0
-        self.indicators = ["|", "/", "-", "\\"]
-        self.indicator_index = 0
-        self.size = 20
+        
+        self.size = 40
+
+        self.hue = 0
+        self.angle = 0
+        self.hue_update_timer = 0.0
 
     def event(self, window) -> None:
         super().event(window)
-
         key_press = window.get_event(EVENT_KEY_DOWN)
-        if key_press and 1073741886 in key_press.key:
-            self.interface.force_stopped = True
+        if key_press:
+            if 27 in key_press.key or 1073741886 in key_press.key:
+                self.interface.force_stopped = True
 
     def update(self, delta_time) -> None:
-        self.animation_frame += delta_time
+        self.angle += 0.4 * delta_time
+        if self.angle >= 360:
+            self.angle -= 360
 
-        if self.animation_frame >= 0.3:
-            self.animation_frame = 0
-            self.indicator_index = (self.indicator_index + 1) % len(self.indicators)
+        self.hue_update_timer += delta_time
+
+        if self.hue_update_timer >= 5.0:
+            self.hue += 20
+            if self.hue >= 360:
+                self.hue -= 360
+            self.hue_update_timer -= 5.0
+
 
     def draw(self, screen):
-        screen.clear((0, 0, 0))
-
-        full_text = f"Loading {self.indicators[self.indicator_index]}"
+        r_f, g_f, b_f = colorsys.hsv_to_rgb(self.hue / 360.0, 0.5, 0.5)
+        r, g, b = int(r_f * 255), int(g_f * 255), int(b_f * 255)
+        screen.clear((r, g, b))
 
         window_width = screen.video_mode.size.x
         window_height = screen.video_mode.size.y
-        x = window_width // 2 - (len(full_text) * self.size) // 4
-        y = window_height // 2
 
-        text_obj = Text(x, y, full_text, self.size,
-                        font=f"{RESSOURCES}/font/ConsolaMono-Book.ttf")
+        loading_text = "Loading"
+        text_width = len(loading_text) * (self.size // 2)
+        margin = 10
+        circle_radius = self.size // 2
+        text_x = window_width // 2 - text_width // 2
+        text_y = window_height // 2 - self.size - margin  
+        text_obj = Text(
+            text_x, text_y,
+            loading_text,
+            self.size,
+            color=(255, 255, 255),
+            font=f"{RESSOURCES}/font/ConsolaMono-Book.ttf"
+        )
         text_obj.draw(screen)
+
+        circle_center_x = window_width // 2
+        circle_center_y = text_y + self.size + margin + circle_radius
+
+        screen.draw_circle(
+            (circle_center_x, circle_center_y),
+            circle_radius,
+            color=(255, 255, 255),
+            thickness=2
+        )
+        dot_radius = 4
+        dot_x = circle_center_x + int(math.cos(math.radians(self.angle)) * circle_radius)
+        dot_y = circle_center_y + int(math.sin(math.radians(self.angle)) * circle_radius)
+        screen.draw_circle(
+            (dot_x, dot_y),
+            dot_radius,
+            color=(255, 255, 255),
+            thickness=0
+        )
 
         all_windows_draw()
 
@@ -49,12 +87,12 @@ class InfiniteLoadingScreen(Loader):
                 del CACHED_FONTS[item]
         super().destroy()
 
-def build_level2(interface = None):
-    if (not interface):
-        interface: MainInterface = MainInterface("Game")
-    interface.add_element(InfiniteLoadingScreen(interface))
-    #interface.add_element(ParticleSpawner(100, 100, number=3, duration_max=1000, density=(0.00006, 0.00006)))
 
+def build_level2(interface=None):
+    if not interface:
+        interface: MainInterface = MainInterface("Game")
+
+    interface.add_element(InfiniteLoadingScreen(interface))
     interface.add_gui(StartAnimation(interface))
 
     interface.window.set_closable(False)

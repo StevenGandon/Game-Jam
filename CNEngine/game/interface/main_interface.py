@@ -85,7 +85,7 @@ class MainInterface(Interface):
 
         super().events()
 
-        if (self.window.check_event(EVENT_KEY_UP) and self.window.get_event(EVENT_KEY_UP).key == SDLK_F12):
+        if (self.window.check_event(EVENT_KEY_UP) and SDLK_F12 in self.window.get_event(EVENT_KEY_UP).key):
             self.show_console()
 
         for item in self.interfaces:

@@ -15,7 +15,6 @@ class InfiniteLoadingScreen(Loader):
 
         key_press = window.get_event(EVENT_KEY_DOWN)
         if key_press and 1073741886 in key_press.key:
-            print("test")
             self.interface.force_stopped = True
 
     def update(self, delta_time) -> None:

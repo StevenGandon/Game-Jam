@@ -79,8 +79,9 @@ def main() -> int:
 
     levels_following()
 
-    LAST_WINDOW.destroy()
-    LAST_WINDOW = None
+    if (LAST_WINDOW):
+        LAST_WINDOW.destroy()
+        LAST_WINDOW = None
 
     builtins.print = BASE_PRINT
 

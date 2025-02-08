@@ -1,6 +1,7 @@
 from CNEngine import *
 from .objects.player import Player
 from .objects.collision_manager import CollisionManager
+from .objects.end_animation import EndAnimation
 
 class MovingBack(Object):
     def __init__(self, interface):
@@ -17,10 +18,10 @@ class MovingBack(Object):
         super().event(window)
         key_press = self.window.get_event(EVENT_KEY_DOWN)
 
-        if key_press and 1073741904 in key_press.key:
-            self.interface.force_stopped = True
+        if key_press and 113 in key_press.key:
+            self.interface.add_gui(EndAnimation(self.interface))
             print("left")
-        if key_press and 1073741903 in key_press.key:
+        if key_press and 100 in key_press.key:
             self.animation += 10
             if self.animation >= self.background.size.x + 250:
                 self.animation = 0 - self.background.size.x - 250
@@ -41,7 +42,7 @@ def build_level5(interface = None):
     temp.elements.append(r)
     interface.add_element(r)
 
-    p = Player(100, 100, interface, get_texture("aaa"), {55: get_texture("vvv")}, temp)
+    p = Player(100, 100, interface, f"{RESSOURCES}/character/idle.png", {55: f"{RESSOURCES}/character/idle.png", 120: f"{RESSOURCES}/character/walking0.png", 190: f"{RESSOURCES}/character/walking1.png", 235: f"{RESSOURCES}/character/walking0.png"}, temp)
     temp.elements.append(p)
     interface.add_element(p)
 

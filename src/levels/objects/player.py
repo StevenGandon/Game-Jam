@@ -6,9 +6,6 @@ class Player(Object):
     def __init__(self: object, x: int, y: int, interface: MainInterface, sprite: Texture, animation, collision_manager: CollisionManager = None, max_force_x = 0.6, max_force_y = 1):
         super().__init__(x, y)
 
-        self.size_x = sprite.size.x
-        self.size_y = sprite.size.y
-
         # self.particles = ParticleSpawner(self.draw_x, self.draw_y, self.z)
 
         self.force_x = 0
@@ -23,12 +20,19 @@ class Player(Object):
 
         self.collision_manager = collision_manager
 
-        self.idle_sprite = sprite
+        self.idle_sprite = get_texture(sprite)
+        self.idle_sprite_reverse = get_texture(sprite.split('.png')[0] + "_reverse.png")
+
+        self.size_x = self.idle_sprite.size.x * 2
+        self.size_y = self.idle_sprite.size.y * 2
+
+        self.sprite = self.idle_sprite
 
         self.falling = False
 
         self.animation_timer = 0
-        self.animation = animation
+        self.animation = {item: get_texture(animation[item]) for item in animation}
+        self.animation_reverse = {item: get_texture(animation[item].split(".png")[0] + "_reverse.png") for item in animation}
 
         self.pressed = [False, False, False]
 
@@ -36,11 +40,11 @@ class Player(Object):
         if (running):
             temp = [item for item in self.animation.keys() if item >= self.animation_timer]
             if (not temp):
-                self.sprite = self.idle_sprite
+                self.sprite = self.idle_sprite if self.direction == "right" else self.idle_sprite_reverse
             else:
-                self.sprite = self.animation[temp[0]]
+                self.sprite = self.animation[temp[0]] if self.direction == "right" else self.animation_reverse[temp[0]]
         else:
-            self.sprite = self.idle_sprite
+            self.sprite = self.idle_sprite if self.direction == "right" else self.idle_sprite_reverse
 
         self.animation_timer += delta_time
         if (self.animation_timer > max(self.animation.keys())):
@@ -140,4 +144,4 @@ class Player(Object):
         super().update(delta_time)
 
     def draw(self, screen):
-        screen.blit(self.sprite, Vector2(self.x, self.y))
+        screen.blit_scaled(self.sprite, Vector2(self.x, self.y), ratios=Vector2(2, 2))

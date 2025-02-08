@@ -1,5 +1,6 @@
 from CNEngine import *
 from .objects.start_animation import StartAnimation
+from .objects.particle import ParticleSpawner, Particle
 
 class InfiniteLoadingScreen(Loader):
     def __init__(self, interface):
@@ -52,6 +53,7 @@ def build_level2(interface = None):
     if (not interface):
         interface: MainInterface = MainInterface("Game")
     interface.add_element(InfiniteLoadingScreen(interface))
+    #interface.add_element(ParticleSpawner(100, 100, number=3, duration_max=1000, density=(0.00006, 0.00006)))
 
     interface.add_gui(StartAnimation(interface))
 

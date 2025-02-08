@@ -1,5 +1,11 @@
 import builtins
 import sys
+import os
+
+from platform import system
+
+if (system() == "Windows"):
+    os.environ["PYSDL2_DLL_PATH"] = "./lib"
 
 from CNEngine import *
 from src import *

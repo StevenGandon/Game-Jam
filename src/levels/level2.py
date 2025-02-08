@@ -10,11 +10,11 @@ class InfiniteLoadingScreen(Loader):
         self.indicator_index = 0
         self.size = 20
 
-    def events(self) -> None:
-        super().events()
+    def event(self, window) -> None:
+        super().event(window)
 
-        key_press = self.window.get_event(EVENT_KEY_DOWN)
-        if key_press and key_press.key == 1073741886:
+        key_press = window.get_event(EVENT_KEY_DOWN)
+        if key_press and 1073741886 in key_press.key:
             print("test")
             self.interface.force_stopped = True
 

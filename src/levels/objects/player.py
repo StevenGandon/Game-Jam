@@ -133,9 +133,6 @@ class Player(Object):
         if (self.force_x > self.max_force_x):
             self.force_x = self.max_force_x
 
-        if (self.y > 1500):
-            self.interface.force_stopped = True
-
         # self.particles.move(*particle_pos)
 
         # self.particles.update(parent)

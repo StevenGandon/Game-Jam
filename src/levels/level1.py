@@ -1,6 +1,8 @@
 from CNEngine import *
 from .objects.player import Player
 from .objects.collision_manager import CollisionManager
+from .objects.end_animation import EndAnimation
+from .objects.start_animation import StartAnimation
 
 class MovingBackground(Object):
     def __init__(self, interface):
@@ -27,6 +29,20 @@ class MovingBackground(Object):
     def draw(self, screen):
         screen.blit(self.background, Vector2(0 - self.animation, 0), from_pos=Vector2(0, self.background.size.y * 0.90 / 5), ratios = Vector2(0.90, 0.90))
 
+class ConditionHandler(Object):
+    def __init__(self, interface, player):
+        super().__init__(0, 0)
+
+        self.interface: MainInterface = interface
+        self.player = player
+
+        self.activated = False
+
+    def update(self, delta_time):
+        if (self.player.y > 1500 and not self.activated):
+            self.activated = True
+            self.interface.add_gui(EndAnimation(self.interface))
+
 def build_level1(interface = None):
     if (not interface):
         interface: MainInterface = MainInterface("Game")
@@ -41,6 +57,9 @@ def build_level1(interface = None):
     p = Player(100, 100, interface, get_texture("aaa"), {55: get_texture("vvv")}, temp)
     temp.elements.append(p)
     interface.add_element(p)
+
+    interface.add_element(ConditionHandler(interface, p))
+    interface.add_gui(StartAnimation(interface))
 
     interface.window.set_closable(False)
 

@@ -1,4 +1,5 @@
 from CNEngine import *
+from .objects.start_animation import StartAnimation
 
 class InfiniteLoadingScreen(Loader):
     def __init__(self, interface):
@@ -51,6 +52,8 @@ def build_level2(interface = None):
     if (not interface):
         interface: MainInterface = MainInterface("Game")
     interface.add_element(InfiniteLoadingScreen(interface))
+
+    interface.add_gui(StartAnimation(interface))
 
     interface.window.set_closable(False)
     return interface

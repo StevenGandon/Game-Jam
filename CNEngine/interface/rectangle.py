@@ -9,9 +9,22 @@ class Rectangle(Object):
         self.size_x = size_x
         self.size_y = size_y
 
+        self.old_rect = [self.size_x, self.size_y]
+
         self.image = Texture(Vector2(size_x, size_y))
+        self.color = color
 
         self.image.clear(color)
+
+    def update(self, delta_time: int):
+        if (self.size_x != self.old_rect[0] or self.size_y != self.old_rect[1]):
+            self.old_rect[0] = self.size_x
+            self.old_rect[1] = self.size_y
+
+            self.image.destroy()
+            self.image = Texture(Vector2(self.size_x, self.size_y).to_int())
+
+            self.image.clear(self.color)
 
     def draw(self, screen) -> None:
         screen.blit(self.image, Vector2(self.x, self.y))

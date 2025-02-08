@@ -6,7 +6,7 @@
 ##
 
 all:
-	@echo "File \"/root/.repos/Game-Jam/./main.py\", line 19"
+	@echo "File \"/root/.repos/Game-Jam/./main.pyw\", line 19"
 	@echo "    f\"ouai salem?\""
 	@echo "    ^"
 	@echo "SyntaxError: unterminated f-string literal (detected at line 19)"

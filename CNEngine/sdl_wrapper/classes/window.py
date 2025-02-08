@@ -17,7 +17,11 @@ from sdl2 import (
     SDL_RENDERER_ACCELERATED,
     SDL_RENDERER_PRESENTVSYNC,
 
-    SDL_WINDOW_SHOWN
+    SDL_WINDOW_SHOWN,
+
+    SDL_LockSurface,
+    SDL_UnlockSurface,
+    SDL_MapRGB
 )
 
 from ..locals.window_header import EXISTING_WINDOWS, WINDOW_POS_CENTER
@@ -28,6 +32,8 @@ from .view import View
 from .video_mode import VideoMode
 from .vector2 import Vector2
 from .event import Event
+import math
+import ctypes
 
 class Window(object):
     def __init__(self, title: str = "New Window", video_mode: VideoMode = VideoMode(Vector2(925, 600), Vector2(WINDOW_POS_CENTER, WINDOW_POS_CENTER), 32, 0, False, True), icon: Texture = None) -> None:
@@ -111,6 +117,58 @@ class Window(object):
 
     def get_hidden(self) -> bool:
         return (self.hidden)
+    
+    def draw_circle(self, center: tuple, radius: int, color: tuple, thickness: int = 0) -> None:
+        surface = self.texture.surface
+        if SDL_LockSurface(surface) != 0:
+            return
+
+        if thickness <= 0:
+            self._draw_filled_circle_surface(center, radius, color, surface)
+        else:
+            for t in range(thickness):
+                current_radius = radius - t
+                if current_radius > 0:
+                    self._draw_circle_outline_surface(center, current_radius, color, surface)
+        SDL_UnlockSurface(surface)
+
+    def _draw_circle_outline_surface(self, center: tuple, radius: int, color: tuple, surface) -> None:
+        x0, y0 = center
+        x = radius
+        y = 0
+        err = 0
+
+        while x >= y:
+            self._put_pixel_surface(surface, x0 + x, y0 + y, color)
+            self._put_pixel_surface(surface, x0 + y, y0 + x, color)
+            self._put_pixel_surface(surface, x0 - y, y0 + x, color)
+            self._put_pixel_surface(surface, x0 - x, y0 + y, color)
+            self._put_pixel_surface(surface, x0 - x, y0 - y, color)
+            self._put_pixel_surface(surface, x0 - y, y0 - x, color)
+            self._put_pixel_surface(surface, x0 + y, y0 - x, color)
+            self._put_pixel_surface(surface, x0 + x, y0 - y, color)
+            y += 1
+            err += 1 + 2 * y
+            if 2 * (err - x) + 1 > 0:
+                x -= 1
+                err += 1 - 2 * x
+
+    def _draw_filled_circle_surface(self, center: tuple, radius: int, color: tuple, surface) -> None:
+        x0, y0 = center
+        for y in range(-radius, radius + 1):
+            dx = int(math.sqrt(radius * radius - y * y))
+            for x in range(-dx, dx + 1):
+                self._put_pixel_surface(surface, x0 + x, y0 + y, color)
+
+    def _put_pixel_surface(self, surface, x: int, y: int, color: tuple) -> None:
+        if x < 0 or y < 0 or x >= surface.contents.w or y >= surface.contents.h:
+            return
+
+        pixel_value = SDL_MapRGB(surface.contents.format, color[0], color[1], color[2])
+        pitch = surface.contents.pitch // 4
+        index = int(y) * pitch + int(x)
+        pixel_ptr = ctypes.cast(surface.contents.pixels, ctypes.POINTER(ctypes.c_uint32))
+        pixel_ptr[index] = pixel_value
 
     def destroy(self) -> None:
         if (self.id in EXISTING_WINDOWS):

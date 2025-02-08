@@ -3,7 +3,7 @@ from CNEngine import *
 from .collision_manager import CollisionManager
 
 class Player(Object):
-    def __init__(self: object, x: int, y: int, sprite: Texture, animation, collision_manager: CollisionManager = None, max_force_x = 0.6, max_force_y = 1):
+    def __init__(self: object, x: int, y: int, interface: MainInterface, sprite: Texture, animation, collision_manager: CollisionManager = None, max_force_x = 0.6, max_force_y = 1):
         super().__init__(x, y)
 
         self.size_x = sprite.size.x
@@ -18,6 +18,8 @@ class Player(Object):
         self.direction = "right"
         self.jumping = False
         self.jump_down = False
+
+        self.interface = interface
 
         self.collision_manager = collision_manager
 
@@ -130,6 +132,9 @@ class Player(Object):
             self.force_x = 0
         if (self.force_x > self.max_force_x):
             self.force_x = self.max_force_x
+
+        if (self.y > 1500):
+            self.interface.force_stopped = True
 
         # self.particles.move(*particle_pos)
 

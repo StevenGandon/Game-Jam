@@ -27,8 +27,9 @@ class MovingBackground(Object):
     def draw(self, screen):
         screen.blit(self.background, Vector2(0 - self.animation, 0), from_pos=Vector2(0, self.background.size.y * 0.90 / 5), ratios = Vector2(0.90, 0.90))
 
-def build_level1():
-    interface: MainInterface = MainInterface("Game")
+def build_level1(interface = None):
+    if (not interface):
+        interface: MainInterface = MainInterface("Game")
     interface.add_element(MovingBackground(interface))
 
     temp = CollisionManager()
@@ -37,7 +38,7 @@ def build_level1():
     temp.elements.append(r)
     interface.add_element(r)
 
-    p = Player(100, 100, get_texture("aaa"), {55: get_texture("vvv")}, temp)
+    p = Player(100, 100, interface, get_texture("aaa"), {55: get_texture("vvv")}, temp)
     temp.elements.append(p)
     interface.add_element(p)
 

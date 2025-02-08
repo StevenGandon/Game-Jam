@@ -11,6 +11,9 @@ class Interface(object):
         self.window = Window(title, video_mode, icon)
         self.window.set_closable(True)
 
+        self.title = title
+        self.icon = icon
+
         self.elements = []
         self.gui = []
 

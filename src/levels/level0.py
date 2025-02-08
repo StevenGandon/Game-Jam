@@ -137,7 +137,7 @@ class Level0Interface(MainInterface):
 
         super().destroy()
 
-def build_level0():
+def build_level0(last_interface = None):
     interface: MainInterface = Level0Interface("Terminal emulator", icon=f"{RESSOURCES}/icons/terminal.png")
 
     interface.console_out.write(f"(~/.repos/Game-Jam)-$ {'./game.exe' if system() == 'Windows' else './game.out'}\n")

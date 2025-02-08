@@ -8,9 +8,24 @@ import builtins
 import sys
 
 BASE_PRINT = builtins.print
+LAST_WINDOW = None
 
-def load_level(level_builder):
-    interface: MainInterface = level_builder()
+def load_level(level_builder, rebuild_window=True):
+    global LAST_WINDOW
+
+    if (LAST_WINDOW):
+        LAST_WINDOW.gui.clear()
+        LAST_WINDOW.elements.clear()
+        LAST_WINDOW.force_stopped = False
+
+        if (rebuild_window):
+            LAST_WINDOW.destroy()
+            LAST_WINDOW = None
+
+    interface: MainInterface = level_builder(None if rebuild_window else LAST_WINDOW)
+
+    if (rebuild_window):
+        LAST_WINDOW = interface
 
     if (interface.rpc):
         pass
@@ -33,21 +48,23 @@ def load_level(level_builder):
             interface.logger.write(f"Uncaught error:\n{format_exc()}", log_type="error", flush=True)
             interface.recover = True
 
-    if (interface.force_stopped):
-        interface.destroy()
-
     builtins.print = BASE_PRINT
-    interface.destroy()
 
     return (interface.force_stopped)
 
 def levels_following():
-    load_level(build_level0)
-    if (not load_level(build_level1)):
+    load_level(build_level0, rebuild_window = True)
+    if (not load_level(build_level1, rebuild_window=True)):
         return
+    # load_level(build_level1, rebuild_window=False)
 
 def main() -> int:
+    global LAST_WINDOW
+
     levels_following()
+
+    LAST_WINDOW.destroy()
+    LAST_WINDOW = None
 
     builtins.print = BASE_PRINT
 

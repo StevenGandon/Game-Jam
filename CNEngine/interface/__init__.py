@@ -5,3 +5,4 @@ from .image import Image
 from .texture import get_texture
 from .object import Object
 from .rectangle import Rectangle
+from .loader import Loader

@@ -82,7 +82,7 @@ class OlivierDeChezCarglass(Object):
         sdlmixer.Mix_FreeMusic(self.sound)
         sdlmixer.Mix_CloseAudio()
 
-def build_level3(interface:MainInterface = None):
+def build_level3(interface: MainInterface = None):
     interfaceAd: MainInterface = Interface("Ads (1 out of 1)")
     olivier = OlivierDeChezCarglass(interfaceAd, interface)
     interfaceAd.add_element(olivier)

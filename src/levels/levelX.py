@@ -70,6 +70,5 @@ def build_levelX(interface = None):
 
     interface.add_gui(Button(interface.window.video_mode.size.x / 2 - 25, interface.window.video_mode.size.y / 2 - 25, 50, 50, lambda: interface.add_gui(EndAnimation(interface))))
 
-
     interface.window.set_closable(False)
     return interface

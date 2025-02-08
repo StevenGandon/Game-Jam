@@ -14,10 +14,13 @@ def load_level(level_builder, rebuild_window=True, clear_datas=True):
     global LAST_WINDOW
 
     if (LAST_WINDOW):
+        LAST_WINDOW.gui.clear()
         if (clear_datas):
-            LAST_WINDOW.gui.clear()
             LAST_WINDOW.elements.clear()
-            LAST_WINDOW.interfaces.clear()
+            if (hasattr(LAST_WINDOW, "interfaces")):
+                for item in LAST_WINDOW.interfaces:
+                    item.destroy()
+                LAST_WINDOW.interfaces.clear()
         LAST_WINDOW.force_stopped = False
 
         if (rebuild_window):

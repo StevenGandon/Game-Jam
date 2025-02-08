@@ -12,6 +12,7 @@ class MovingBackground(Object):
         self.animation_reverse = False
         self.interface = interface
         self.background = get_texture(f"{ROOT}/assets/ressources/UI/bg_blured.png")
+        self.background.clear((255, 255, 255))
 
     def update(self, delta_time):
         self.animation += delta_time / 17 if not self.animation_reverse else -(delta_time / 17)
@@ -27,7 +28,7 @@ class MovingBackground(Object):
             self.animation = 0
 
     def draw(self, screen):
-        screen.blit(self.background, Vector2(0 - self.animation, 0), from_pos=Vector2(0, self.background.size.y * 0.90 / 5), ratios = Vector2(0.90, 0.90))
+        screen.blit_scaled(self.background, Vector2(0 - self.animation, 0), from_pos=Vector2(0, self.background.size.y * 0.90 / 5), ratios = Vector2(0.90, 0.90))
 
 class ConditionHandler(Object):
     def __init__(self, interface, player):
@@ -54,7 +55,7 @@ def build_level1(interface = None):
     temp.elements.append(r)
     interface.add_element(r)
 
-    p = Player(100, 100, interface, get_texture("aaa"), {55: get_texture("vvv")}, temp)
+    p = Player(100, 100, interface, f"{RESSOURCES}/character/idle.png", {55: f"{RESSOURCES}/character/idle.png", 120: f"{RESSOURCES}/character/walking0.png", 190: f"{RESSOURCES}/character/walking1.png", 235: f"{RESSOURCES}/character/walking0.png"}, temp)
     temp.elements.append(p)
     interface.add_element(p)
 

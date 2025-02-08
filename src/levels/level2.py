@@ -34,18 +34,20 @@ class InfiniteLoadingScreen(Loader):
         window_height = screen.video_mode.size.y
 
         loading_text = "Loading"
-        text_width = len(loading_text) * (self.size // 2)
+
         margin = 10
         circle_radius = self.size // 2
-        text_x = window_width // 2 - text_width // 2
+        text_x = 0
         text_y = window_height // 2 - self.size - margin
         text_obj = Text(
             text_x, text_y,
             loading_text,
             self.size,
             color=(255, 255, 255),
-            font=f"{RESSOURCES}/font/ConsolaMono-Book.ttf"
+            font=f"{RESSOURCES}/font/Inter.ttf"
         )
+        text_x = window_width // 2 - text_obj.texture.size.x // 2
+        text_obj.x = text_x
         text_obj.draw(screen)
 
         circle_center_x = window_width // 2

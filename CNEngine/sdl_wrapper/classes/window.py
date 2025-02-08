@@ -120,7 +120,7 @@ class Window(object):
     
     def draw_circle(self, center: tuple, radius: int, color: tuple, thickness: int = 0) -> None:
         surface = self.texture.surface
-        if SDL_LockSurface(surface) != 0:
+        if not surface or SDL_LockSurface(surface) != 0:
             return
 
         if thickness <= 0:

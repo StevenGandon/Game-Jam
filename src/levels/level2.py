@@ -8,12 +8,11 @@ class InfiniteLoadingScreen(Loader):
     def __init__(self, interface):
         super().__init__(0, 0)
         self.interface = interface
-        
+
         self.size = 40
 
         self.hue = 0
         self.angle = 0
-        self.hue_update_timer = 0.0
 
     def event(self, window) -> None:
         super().event(window)
@@ -23,18 +22,8 @@ class InfiniteLoadingScreen(Loader):
                 self.interface.force_stopped = True
 
     def update(self, delta_time) -> None:
-        self.angle += 0.4 * delta_time
-        if self.angle >= 360:
-            self.angle -= 360
-
-        self.hue_update_timer += delta_time
-
-        if self.hue_update_timer >= 5.0:
-            self.hue += 20
-            if self.hue >= 360:
-                self.hue -= 360
-            self.hue_update_timer -= 5.0
-
+        self.angle += (0.4 * delta_time) % 361
+        self.hue = (self.hue + (delta_time * 0.1)) % 361
 
     def draw(self, screen):
         r_f, g_f, b_f = colorsys.hsv_to_rgb(self.hue / 360.0, 0.5, 0.5)
@@ -49,7 +38,7 @@ class InfiniteLoadingScreen(Loader):
         margin = 10
         circle_radius = self.size // 2
         text_x = window_width // 2 - text_width // 2
-        text_y = window_height // 2 - self.size - margin  
+        text_y = window_height // 2 - self.size - margin
         text_obj = Text(
             text_x, text_y,
             loading_text,
@@ -77,8 +66,6 @@ class InfiniteLoadingScreen(Loader):
             color=(255, 255, 255),
             thickness=0
         )
-
-        all_windows_draw()
 
     def destroy(self) -> None:
         for item in tuple(CACHED_FONTS.keys()):

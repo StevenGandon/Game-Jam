@@ -13,7 +13,7 @@ class Logger(object):
         fp: TextIO = self.fp
         if (fp is None):
             fp = sys.stdout
-        if (not fp.writable() or fp.closed):
+        if (not fp.writable() or fp.closed or sys.meta_path is None):
             return
         if (not fp.isatty() or not self.ansi):
             fp.write(f"[{SYMBOLS.get(log_type, '*')}] {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | {message}\n")

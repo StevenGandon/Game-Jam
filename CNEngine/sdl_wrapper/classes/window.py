@@ -21,7 +21,8 @@ from sdl2 import (
 
     SDL_LockSurface,
     SDL_UnlockSurface,
-    SDL_MapRGB
+    SDL_MapRGB,
+    SDL_SetWindowTitle
 )
 
 from ..locals.window_header import EXISTING_WINDOWS, WINDOW_POS_CENTER
@@ -117,7 +118,10 @@ class Window(object):
 
     def get_hidden(self) -> bool:
         return (self.hidden)
-    
+
+    def set_title(self, title: str):
+        SDL_SetWindowTitle(self.window, title)
+
     def draw_circle(self, center: tuple, radius: int, color: tuple, thickness: int = 0) -> None:
         surface = self.texture.surface
         if not surface or SDL_LockSurface(surface) != 0:

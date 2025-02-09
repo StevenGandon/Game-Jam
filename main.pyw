@@ -13,6 +13,10 @@ from src import *
 from sys import exit
 from traceback import format_exc
 
+from sdl2.sdlmixer import Mix_OpenAudio, Mix_LoadWAV, Mix_PlayChannel, Mix_Playing, Mix_CloseAudio, MIX_DEFAULT_FORMAT
+from sdl2 import SDL_Delay
+from sdl2.ext.compat import byteify
+
 BASE_PRINT = builtins.print
 LAST_WINDOW = None
 
@@ -20,8 +24,12 @@ def load_level(level_builder, rebuild_window=True, clear_datas=True):
     global LAST_WINDOW
 
     if (LAST_WINDOW):
+        for item in LAST_WINDOW.gui:
+            item.destroy()
         LAST_WINDOW.gui.clear()
         if (clear_datas):
+            for item in LAST_WINDOW.elements:
+                item.destroy()
             LAST_WINDOW.elements.clear()
             if (hasattr(LAST_WINDOW, "interfaces")):
                 for item in LAST_WINDOW.interfaces:
@@ -73,10 +81,19 @@ def levels_following():
         return
     if (not load_level(build_level3, rebuild_window=False, clear_datas=False)):
         return
+    if not Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024):
+        wav = Mix_LoadWAV(byteify(f"{RESSOURCES}/sound/error.wav", "utf-8"))
+        channel = Mix_PlayChannel(-1, wav, 0)
     if (not load_level(build_level6, rebuild_window=False)):
         return
+    Mix_CloseAudio()
     load_level(build_level5, rebuild_window=False)
+
+    if not Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024):
+        wav = Mix_LoadWAV(byteify(f"{RESSOURCES}/sound/spas12.wav", "utf-8"))
+        channel = Mix_PlayChannel(-1, wav, 0)
     load_level(build_levelend, rebuild_window=True)
+    Mix_CloseAudio()
 
 def main() -> int:
     global LAST_WINDOW

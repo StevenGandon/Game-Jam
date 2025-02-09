@@ -73,6 +73,11 @@ def levels_following():
         return
     if (not load_level(build_level3, rebuild_window=False, clear_datas=False)):
         return
+    if (not load_level(build_level6, rebuild_window=False)):
+        return
+    if (not load_level(build_level5, rebuild_window=False)):
+        return
+    load_level(build_levelend, rebuild_window=True)
 
 def main() -> int:
     global LAST_WINDOW

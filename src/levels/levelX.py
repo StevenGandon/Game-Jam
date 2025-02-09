@@ -33,11 +33,11 @@ class ChanginScreenCOlor(Loader):
         key_press = window.get_event(EVENT_KEY_UP)
         mouse_press = window.get_event(EVENT_MOUSE_DOWN)
         if key_press:
-            if SDLK_F10 in key_press.key:
+            if SDLK_F5 in key_press.key:
                 self.backgroundColor += 10
                 if (self.backgroundColor > 255):
                     self.backgroundColor = 255
-            if SDLK_F11 in key_press.key:
+            if SDLK_F4 in key_press.key:
                 self.backgroundColor -= 10
                 if (self.backgroundColor < 0):
                     self.backgroundColor = 0

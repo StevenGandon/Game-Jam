@@ -5,11 +5,12 @@ from ...sdl_wrapper import (
 
     WINDOW_POS_CENTER
 )
+from sdl2 import SDL_WINDOWPOS_UNDEFINED
 from ...locals import RESSOURCES
 
 class ErrorInterface(Interface):
     def __init__(self, title: str = "Error", error_message: str = "") -> None:
-        super().__init__(title, VideoMode(Vector2(int(45 + len(error_message) * 14 * 0.6 + 30), 100), Vector2(WINDOW_POS_CENTER, WINDOW_POS_CENTER), 32), get_texture(f"{RESSOURCES}/UI/error-icon.png"))
+        super().__init__(title, VideoMode(Vector2(int(45 + len(error_message) * 14 * 0.6 + 30), 100), Vector2(SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED), 32), get_texture(f"{RESSOURCES}/UI/error-icon.png"))
 
         self.error_message = error_message
         self.error_icon = get_texture(f"{RESSOURCES}/UI/error-icon.png")

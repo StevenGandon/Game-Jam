@@ -1,6 +1,7 @@
 from CNEngine import *
 
 from .collision_manager import CollisionManager
+from .particle import Particle, ParticleSpawner
 
 class Player(Object):
     def __init__(self: object, x: int, y: int, interface: MainInterface, sprite: Texture, animation, collision_manager: CollisionManager = None, max_force_x = 0.6, max_force_y = 1):
@@ -33,6 +34,8 @@ class Player(Object):
         self.animation_timer = 0
         self.animation = {item: get_texture(animation[item]) for item in animation}
         self.animation_reverse = {item: get_texture(animation[item].split(".png")[0] + "_reverse.png") for item in animation}
+
+        self.spawn_particle_timer = 0
 
         self.pressed = [False, False, False]
 
@@ -128,6 +131,11 @@ class Player(Object):
             self.force_y -= delta_time / (100 + (self.max_force_y - self.force_y) * 200)
 
         if (moving):
+            if (not self.falling and not self.jumping):
+                self.spawn_particle_timer += delta_time
+                if (self.spawn_particle_timer > 30):
+                    self.interface.add_gui(ParticleSpawner(self.x + self.size_x / 1.5, self.y + self.size_y / 1.2, self.interface, (1, 0), max_vec_x=0.2, max_vec_y=-0.3, number=3, duration_max=520, density=(0, 0.001), color_set=[(64, 33, 20), (36, 21, 15), (54, 36, 28), (92, 33, 8), (54, 25, 13), (38, 11, 0), (0, 0, 0)]))
+                    self.spawn_particle_timer = 0
             self.force_x += delta_time / (100 + (self.max_force_x - self.force_x) * 200)
         else:
             self.force_x -= delta_time / (100 + (self.max_force_x - self.force_x) * 200)

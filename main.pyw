@@ -14,7 +14,6 @@ from sys import exit
 from traceback import format_exc
 
 from sdl2.sdlmixer import Mix_OpenAudio, Mix_LoadWAV, Mix_PlayChannel, Mix_Playing, Mix_CloseAudio, MIX_DEFAULT_FORMAT
-from sdl2 import SDL_Delay
 from sdl2.ext.compat import byteify
 
 BASE_PRINT = builtins.print

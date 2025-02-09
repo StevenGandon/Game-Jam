@@ -1,6 +1,10 @@
 from CNEngine import *
 from .objects.end_animation import EndAnimation
 
+from sdl2.sdlmixer import Mix_OpenAudio, Mix_LoadWAV, Mix_PlayChannel, Mix_Playing, Mix_CloseAudio, MIX_DEFAULT_FORMAT
+from sdl2 import SDL_Delay
+from sdl2.ext.compat import byteify
+
 class ChanginScreenCOlor(Loader):
     def __init__(self, interface):
         super().__init__(0, 0)
@@ -19,6 +23,9 @@ class ChanginScreenCOlor(Loader):
             self.change_lever_image(f"{ROOT}/assets/ressources/UI/9k2.png")
             self.interface.add_gui(EndAnimation(self.interface))
             self.activated = True
+            if not Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024):
+                wav = Mix_LoadWAV(byteify(f"{RESSOURCES}/sound/click.wav", "utf-8"))
+                channel = Mix_PlayChannel(-1, wav, 0)
 
     def event(self, window) -> None:
         super().event(window)

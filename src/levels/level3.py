@@ -15,6 +15,13 @@ class OlivierDeChezCarglass(Object):
         self.frame_time = 1 / 24
         self.start_time = None
         self.maininterface = maininterface
+        self.is_paused = False
+        self.paused_time = 0
+        self.pause_start = None
+
+        self.pause_image_path = f"{RESSOURCES}/UI/pause.png"
+        if os.path.exists(self.pause_image_path):
+            self.pause_texture = get_texture(self.pause_image_path)
 
         sdlmixer.Mix_OpenAudio(44100, sdlmixer.MIX_DEFAULT_FORMAT, 2, 2048)
 
@@ -34,6 +41,7 @@ class OlivierDeChezCarglass(Object):
     def start_sound(self):
         sdlmixer.Mix_PlayMusic(self.sound, 0)
         self.start_time = time.time()
+        self.paused_time = 0
 
     def skip_ad(self, *args):
         self.start_time = time.time()
@@ -42,10 +50,13 @@ class OlivierDeChezCarglass(Object):
         self.image = 0
 
     def update(self, delta_time):
+        if self.is_paused:
+            return
+
         if self.start_time is None:
             return
 
-        elapsed_time = time.time() - self.start_time
+        elapsed_time = time.time() - self.start_time - self.paused_time
         expected_frame = int(elapsed_time / self.frame_time)
         self.image = expected_frame % self.nb_images
 
@@ -55,6 +66,8 @@ class OlivierDeChezCarglass(Object):
             self.start_sound()
 
     def draw(self, screen):
+        if not self.is_paused:
+            sdlmixer.Mix_ResumeMusic()
         image_path = f"{RESSOURCES}/videos/ad/ad{self.image:04}.png"
         if os.path.exists(image_path):
             texture = get_texture(image_path)
@@ -70,12 +83,29 @@ class OlivierDeChezCarglass(Object):
 
         self.skip_button_text.draw(screen)
 
+        if self.is_paused:
+            screen_size = self.interface.window.video_mode.size
+            self.pause_image_size = self.pause_texture.size
+            pause_position = Vector2((screen_size.x - self.pause_image_size.x) // 2, (screen_size.y - self.pause_image_size.y) // 2)
+            screen.blit(self.pause_texture, pause_position)
+
     def event(self, window):
+        if ((window.get_event(EVENT_CLOSE) or window.get_event(EVENT_QUIT)) and window.is_closable):
+            self.maininterface.force_stopped = True
         key_press = window.get_event(EVENT_KEY_DOWN)
         if key_press:
             if 32 in key_press.key:
-                print("Space pressed")
-                self.maininterface.force_stopped = True
+                self.is_paused = not self.is_paused
+                if self.is_paused:
+                    sdlmixer.Mix_PauseMusic()
+                    self.pause_start = time.time()
+                    if self.is_paused:
+                        self.interface.window.set_closable(True)
+                    else:
+                        self.interface.window.set_closable(False)
+                else:
+                    sdlmixer.Mix_ResumeMusic()
+                    self.paused_time += time.time() - self.pause_start
         self.skip_button.event(window)
 
     def destroy(self):

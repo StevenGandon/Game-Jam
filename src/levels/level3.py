@@ -49,6 +49,8 @@ class OlivierDeChezCarglass(Object):
         sdlmixer.Mix_HaltMusic()
         self.start_sound()
         self.image = 0
+        if self.is_paused:
+            self.is_paused = False
 
     def update(self, delta_time):
         if self.is_paused:

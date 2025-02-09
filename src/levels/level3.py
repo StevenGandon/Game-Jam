@@ -37,6 +37,7 @@ class OlivierDeChezCarglass(Object):
         self.interface.add_gui(self.skip_button)
 
         self.skip_button_text = Text(button_x + 10, button_y + 10, "Skip Ad ->", 24, color=(255, 255, 255))
+        self.skip_button_enabled = False
 
     def start_sound(self):
         sdlmixer.Mix_PlayMusic(self.sound, 0)
@@ -60,6 +61,11 @@ class OlivierDeChezCarglass(Object):
         expected_frame = int(elapsed_time / self.frame_time)
         self.image = expected_frame % self.nb_images
 
+        if elapsed_time >= 5:
+            self.skip_button_enabled = True
+        else:
+            self.skip_button_enabled = False
+
         if self.image == self.nb_images - 1:
             self.start_time = time.time()
             self.image = 0
@@ -78,10 +84,10 @@ class OlivierDeChezCarglass(Object):
                 CACHED_IMAGE[element].destroy()
                 del CACHED_IMAGE[element]
 
-        button_rect = Rectangle(self.skip_button.x, self.skip_button.y, self.skip_button.size_x, self.skip_button.size_y, (0, 0, 0))
-        button_rect.draw(screen)
-
-        self.skip_button_text.draw(screen)
+        if self.skip_button_enabled:
+            button_rect = Rectangle(self.skip_button.x, self.skip_button.y, self.skip_button.size_x, self.skip_button.size_y, (0, 0, 0))
+            button_rect.draw(screen)
+            self.skip_button_text.draw(screen)
 
         if self.is_paused:
             screen_size = self.interface.window.video_mode.size
@@ -106,7 +112,8 @@ class OlivierDeChezCarglass(Object):
                 else:
                     sdlmixer.Mix_ResumeMusic()
                     self.paused_time += time.time() - self.pause_start
-        self.skip_button.event(window)
+        if self.skip_button_enabled:
+            self.skip_button.event(window)
 
     def destroy(self):
         sdlmixer.Mix_FreeMusic(self.sound)
